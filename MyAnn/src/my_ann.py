@@ -5,12 +5,13 @@ Created on Wed Jun 12 23:30:09 2019
 @author: Dario
 """
 
-import datetime
-print(datetime.datetime.now())
 # Importing the libraries
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime 
+
+tim = datetime.datetime.now()
 
 # Importing the dataset
 dataset = pd.read_csv('Churn_Modelling.csv')
@@ -49,15 +50,16 @@ X_test = sc.transform(X_test)
 #import keras
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.utils.vis_utils import plot_model
 
 # Create your classifier here
 # Initializing the ANN
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(6, input_shape=(11,), kernel_initializer='glorot_uniform', activation='relu'))
+classifier.add(Dense(11, input_shape=(11,), kernel_initializer='glorot_uniform', activation='relu'))
 
-classifier.add(Dense(6, kernel_initializer='glorot_uniform', activation='relu'))
+classifier.add(Dense(11, kernel_initializer='glorot_uniform', activation='relu'))
 
 classifier.add(Dense(1, kernel_initializer='glorot_uniform', activation='sigmoid'))
 
@@ -65,6 +67,8 @@ classifier.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accur
 
 # Fitting classifier to the Training set
 classifier.fit(X_train, y_train, batch_size=100, epochs=100)
+
+# classifier.
 
 # Part 3 - Making predictions and evaluating the model
 
@@ -74,11 +78,16 @@ y_pred = (y_pred > 0.5)
 
 X_test_homework=np.array([[0,0,600,1,40,3,60000,2,1,1,50000]])
 y_pred_homework = classifier.predict(sc.transform(X_test_homework))
-y_pred_homework = (y_pred_homework > 0.5)
+y_pred_homework_bool = (y_pred_homework > 0.5)
+
+print("Remains prob: {prob}=>{pred}".format(prob=y_pred_homework, pred=y_pred_homework_bool[0][0]))
 
 # Making the Confusion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-print(datetime.datetime.now())
+print(classifier.summary())
+plot_model(classifier,to_file='my_ann_plot.svg', show_shapes=True)
+
+print(datetime.datetime.now() - tim)
